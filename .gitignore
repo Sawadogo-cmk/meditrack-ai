@@ -1,0 +1,22 @@
+# Dépendances
+node_modules/
+vendor/
+
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+build/
+*.log
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Base de données locale
+*.sqlite
+*.sql.gz
