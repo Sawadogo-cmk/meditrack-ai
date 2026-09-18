@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Support\Facades\Route;
@@ -17,4 +18,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ressources
     Route::apiResource('patients', PatientController::class);
     Route::apiResource('services', ServiceController::class);
+    Route::apiResource('doctors', DoctorController::class);
 });
