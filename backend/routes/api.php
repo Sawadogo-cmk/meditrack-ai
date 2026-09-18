@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ConsultationController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\MedicalRecordController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Support\Facades\Route;
@@ -21,9 +23,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('services', ServiceController::class);
     Route::apiResource('doctors', DoctorController::class);
 
-    // Rendez-vous : route custom pour le changement de statut AVANT apiResource
+    // Dossier médical d'un patient
+    Route::get('patients/{patient}/medical-records', [MedicalRecordController::class, 'indexByPatient'])
+        ->name('patients.medical-records');
+
+    // Rendez-vous : route custom AVANT apiResource
     Route::patch('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])
         ->name('appointments.update-status');
-
     Route::apiResource('appointments', AppointmentController::class);
+
+    // Consultations
+    Route::apiResource('consultations', ConsultationController::class);
 });
