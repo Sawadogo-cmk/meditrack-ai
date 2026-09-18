@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
@@ -19,4 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('patients', PatientController::class);
     Route::apiResource('services', ServiceController::class);
     Route::apiResource('doctors', DoctorController::class);
+
+    // Rendez-vous : route custom pour le changement de statut AVANT apiResource
+    Route::patch('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])
+        ->name('appointments.update-status');
+
+    Route::apiResource('appointments', AppointmentController::class);
 });
