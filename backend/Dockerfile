@@ -3,7 +3,12 @@ FROM php:8.3-apache
 # Extensions PHP nécessaires à Laravel
 RUN apt-get update && apt-get install -y \
     git unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ⚠️ Corrige le conflit MPM : désactive tous les MPM puis active mpm_prefork
+RUN a2dismod mpm_event mpm_worker mpm_itk 2>/dev/null || true \
+    && a2enmod mpm_prefork
 
 # Active mod_rewrite (nécessaire pour Laravel)
 RUN a2enmod rewrite
