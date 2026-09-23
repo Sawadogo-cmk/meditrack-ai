@@ -19,7 +19,7 @@ Plateforme intelligente de gestion des établissements de santé : centralisatio
 
 <br>
 
-![Dashboard](docs/screenshots/02-dashboard.png)
+![Dashboard](docs/screenshots/01-login.png)
 
 <br>
 
