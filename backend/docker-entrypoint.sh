@@ -1,12 +1,11 @@
 #!/bin/bash
 set -e
 
-# Cache de config pour la production
 php artisan config:cache
 php artisan route:cache
-
-# Migrations automatiques au démarrage
 php artisan migrate --force
 
-# Démarre Apache
-apache2-foreground
+# Utilise le port dynamique fourni par Railway
+PORT=${PORT:-8080}
+
+php artisan serve --host=0.0.0.0 --port=$PORT
