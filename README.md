@@ -111,3 +111,17 @@ Cette plateforme répond à cette problématique en proposant :
 ---
 
 ## 🏗️ Architecture
+L'application est organisée en trois couches indépendantes qui communiquent via une API REST.
+
+**Frontend (React + TypeScript)** → **API REST (Laravel)** → **MySQL**
+
+Et en parallèle, un service Python viendra s'ajouter pour la couche IA.
+
+| Couche | Technologie | Rôle |
+|---|---|---|
+| **Frontend** | React + TypeScript + Vite | Interface utilisateur |
+| **API REST** | Laravel 13 + Sanctum | Logique métier + authentification |
+| **Base de données** | MySQL 8 | Persistance des données |
+| **Service IA** | Python + FastAPI (prévu) | Analyse et aide à la décision |
+
+Le frontend consomme uniquement l'API REST, ce qui permet d'envisager facilement une application mobile (React Native) qui réutiliserait les mêmes endpoints.
