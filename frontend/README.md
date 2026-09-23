@@ -1,32 +1,131 @@
-# React + TypeScript + Vite
+# MediTrack AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> **« Des données de santé, un meilleur demain. »**
 
-Currently, two official plugins are available:
+Plateforme intelligente de gestion des établissements de santé : centralisation des patients, médecins, rendez-vous, consultations et dossiers médicaux, avec préparation d'une couche d'intelligence artificielle d'aide à la décision.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Dashboard](docs/screenshots/02-dashboard.png)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📋 Sommaire
 
-## Expanding the Oxlint configuration
+- [À propos](#-à-propos)
+- [Fonctionnalités](#-fonctionnalités)
+- [Captures d'écran](#-captures-décran)
+- [Stack technique](#-stack-technique)
+- [Architecture](#-architecture)
+- [Structure du projet](#-structure-du-projet)
+- [Installation](#-installation)
+- [API](#-api)
+- [Roadmap](#-roadmap)
+- [Auteur](#-auteur)
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+---
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+## 🎯 À propos
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+MediTrack AI est né du constat que de nombreux établissements de santé gèrent encore leurs informations (patients, rendez-vous, consultations) de manière dispersée ou manuelle. Cela entraîne des pertes de temps, des doublons, et une faible exploitation des données disponibles.
+
+Cette plateforme répond à cette problématique en proposant :
+
+- Une **centralisation** des données médicales et administratives
+- Une **gestion fine des rôles** (Administrateur, Médecin, Secrétaire, Patient)
+- Une **API REST sécurisée** préparant une future application mobile
+- Un socle **prêt à accueillir de l'intelligence artificielle** (analyse, alertes, aide à la décision)
+
+---
+
+## ✨ Fonctionnalités
+
+### 🔐 Authentification & sécurité
+- Authentification par token (Laravel Sanctum)
+- Gestion des rôles et permissions
+- Mots de passe hashés (Bcrypt)
+- Journalisation des actions sensibles
+
+### 👥 Gestion des patients
+- Enregistrement, modification, archivage (jamais de suppression physique)
+- **Code patient auto-généré** au format `PAT-YYYYMM-0001`
+- Recherche multi-champs (nom, code, téléphone)
+- Dossier médical complet avec historique chronologique
+
+### 🩺 Gestion médicale
+- **Médecins** : compte utilisateur + profil professionnel liés en une transaction
+- **Services** : médecine générale, pédiatrie, maternité, cardiologie, laboratoire, radiologie
+- **Rendez-vous** :
+  - Détection automatique des chevauchements (médecin / patient)
+  - Workflow de statuts strict : `pending → confirmed → completed`
+  - Filtres par date, statut, médecin, service
+- **Consultations** :
+  - Enregistrement du motif, observations, diagnostic et traitement
+  - **Génération automatique d'une entrée dans le dossier médical du patient**
+  - Le rendez-vous lié passe automatiquement au statut `completed`
+
+### 📊 Tableau de bord
+- Statistiques en temps réel (patients, médecins, RDV, consultations)
+- Graphique de charge par service (ratio RDV / médecin)
+- Répartition des statuts de rendez-vous
+- Liste des prochains rendez-vous
+
+---
+
+## 📸 Captures d'écran
+
+### Connexion
+![Login](docs/screenshots/01-login.png)
+
+### Tableau de bord
+![Dashboard](docs/screenshots/02-dashboard.png)
+
+### Liste des patients
+![Patients](docs/screenshots/03-patients.png)
+
+### Dossier médical d'un patient
+![Patient detail](docs/screenshots/04-patient-detail.png)
+
+### Formulaire patient
+![Patient form](docs/screenshots/05-patient-form.png)
+
+### Prise de rendez-vous
+![Appointments](docs/screenshots/06-appointments.png)
+
+### Gestion des médecins
+![Doctors](docs/screenshots/07-doctors.png)
+
+### Consultations
+![Consultations](docs/screenshots/08-consultations.png)
+
+---
+
+## 🛠️ Stack technique
+
+| Couche | Technologie |
+|---|---|
+| **Frontend** | React 19 · TypeScript · Vite · Tailwind CSS · React Router · Zustand · Recharts · Lucide Icons |
+| **Backend** | Laravel 13 · PHP 8.3 · Laravel Sanctum · Eloquent ORM |
+| **Base de données** | MySQL 8 |
+| **IA (prévu)** | Python · Pandas · Scikit-learn · PyTorch |
+| **Outils** | VS Code · Git / GitHub · Postman · draw.io · Laragon |
+
+---
+
+## 🏗️ Architecture
+
+---
+
+## 🚀 Installation
+
+### Prérequis
+
+- PHP **8.3+**
+- Composer
+- Node.js **20+**
+- MySQL **8**
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/Sawadogo-cmk/meditrack-ai.git
+cd meditrack-ai
+

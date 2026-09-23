@@ -9,33 +9,38 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  loadFromStorage: () => void;
   setUser: (user: User) => void;
 }
 
 const TOKEN_KEY = 'meditrack_token';
 const USER_KEY = 'meditrack_user';
 
+// Hydratation SYNCHRONE depuis localStorage, avant tout render
+function readInitialState(): {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+} {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const userRaw = localStorage.getItem(USER_KEY);
+
+  if (!token || !userRaw) {
+    return { user: null, token: null, isAuthenticated: false };
+  }
+
+  try {
+    const user = JSON.parse(userRaw) as User;
+    return { user, token, isAuthenticated: true };
+  } catch {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    return { user: null, token: null, isAuthenticated: false };
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  ...readInitialState(),
   isLoading: false,
-
-  loadFromStorage: () => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    const userRaw = localStorage.getItem(USER_KEY);
-
-    if (token && userRaw) {
-      try {
-        const user = JSON.parse(userRaw) as User;
-        set({ user, token, isAuthenticated: true });
-      } catch {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-      }
-    }
-  },
 
   login: async (email, password) => {
     set({ isLoading: true });
