@@ -1,24 +1,64 @@
-# MediTrack AI
+<div align="center">
 
-> *« Des données de santé, un meilleur demain. »*
+# 🏥 MediTrack AI
+
+### *« Des données de santé, un meilleur demain. »*
 
 Plateforme intelligente de gestion des établissements de santé : centralisation des patients, médecins, rendez-vous, consultations et dossiers médicaux, avec un module d'intelligence artificielle d'aide à la décision.
 
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-scikit--learn-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/Licence-Privé-lightgrey)]()
+
+</div>
+
+<br>
+
 ![Dashboard](docs/screenshots/02-dashboard.png)
+
+<br>
 
 ## 📋 Sommaire
 
-- [À propos](#-à-propos)
-- [Fonctionnalités](#-fonctionnalités)
-- [Captures d'écran](#-captures-décran)
-- [Stack technique](#️-stack-technique)
-- [Architecture](#️-architecture)
-- [Modèle d'IA](#-modèle-dia)
-- [Structure du projet](#-structure-du-projet)
-- [Installation](#-installation)
-- [API](#-api)
-- [Roadmap](#️-roadmap)
-- [Auteur](#-auteur)
+<table>
+<tr>
+<td valign="top">
+
+- [🎯 À propos](#-à-propos)
+- [✨ Fonctionnalités](#-fonctionnalités)
+- [📸 Captures d'écran](#-captures-décran)
+- [🛠️ Stack technique](#️-stack-technique)
+
+</td>
+<td valign="top">
+
+- [🏗️ Architecture](#️-architecture)
+- [🤖 Modèle d'IA](#-modèle-dia)
+- [📁 Structure du projet](#-structure-du-projet)
+- [🚀 Installation](#-installation)
+
+</td>
+<td valign="top">
+
+- [🔌 API](#-api)
+- [🗺️ Roadmap](#️-roadmap)
+- [👤 Auteur](#-auteur)
+
+</td>
+</tr>
+</table>
+
+<br>
+
+---
+
+
+---
 
 ## 🎯 À propos
 
@@ -30,6 +70,9 @@ Cette plateforme répond à cette problématique en proposant :
 - Une gestion fine des rôles (Administrateur, Médecin, Secrétaire, Patient)
 - Une API REST sécurisée préparant une future application mobile
 - Un module d'intelligence artificielle pour l'analyse et l'aide à la décision
+
+
+---
 
 ## ✨ Fonctionnalités
 
@@ -75,27 +118,37 @@ Cette plateforme répond à cette problématique en proposant :
 - Alertes automatiques quand un service est en tension
 - Architecture découplée : React → Laravel → Service IA → MySQL
 
+
+---
+
 ## 📸 Captures d'écran
 
+<div align="center">
+
 | Connexion | Tableau de bord |
-|---|---|
+|:---:|:---:|
 | ![Connexion](docs/screenshots/01-login.png) | ![Dashboard](docs/screenshots/02-dashboard.png) |
 
-| Prévisions IA | Liste des patients |
-|---|---|
-| ![Prévisions IA](docs/screenshots/09-ai-predictions.png) | ![Patients](docs/screenshots/03-patients.png) |
+| Liste des patients | Dossier médical |
+|:---:|:---:|
+| ![Patients](docs/screenshots/03-patients.png) | ![Dossier médical](docs/screenshots/04-patient-detail.png) |
 
-| Dossier médical | Formulaire patient |
-|---|---|
-| ![Dossier médical](docs/screenshots/04-patient-detail.png) | ![Formulaire patient](docs/screenshots/05-patient-form.png) |
+| Formulaire patient | Rendez-vous |
+|:---:|:---:|
+| ![Formulaire patient](docs/screenshots/05-patient-form.png) | ![Rendez-vous](docs/screenshots/06-appointments.png) |
 
-| Rendez-vous | Médecins |
-|---|---|
-| ![Rendez-vous](docs/screenshots/06-appointments.png) | ![Médecins](docs/screenshots/07-doctors.png) |
+| Médecins | Consultations |
+|:---:|:---:|
+| ![Médecins](docs/screenshots/07-doctors.png) | ![Consultations](docs/screenshots/08-consultations.png) |
 
-| Consultations |
-|---|
-| ![Consultations](docs/screenshots/08-consultations.png) |
+| Prévisions IA |
+|:---:|
+| ![Prévisions IA](docs/screenshots/09-ai-predictions.png) |
+
+</div>
+
+
+---
 
 ## 🛠️ Stack technique
 
@@ -106,6 +159,9 @@ Cette plateforme répond à cette problématique en proposant :
 | **Base de données** | MySQL 8 |
 | **Service IA** | Python 3.13 · FastAPI · scikit-learn · Pandas · SQLAlchemy |
 | **Outils** | VS Code · Git / GitHub · Postman · draw.io · Laragon |
+
+
+---
 
 ## 🏗️ Architecture
 
@@ -120,11 +176,17 @@ L'application est organisée en quatre couches indépendantes qui communiquent v
 
 Le frontend ne parle qu'à l'API Laravel. Laravel fait le pont vers le service IA Python via HTTP (proxy sécurisé). Le service IA lit directement la base MySQL en lecture seule pour ses analyses.
 
+
+---
+
 ## 🤖 Modèle d'IA
 
 Le service Python entraîne un modèle de régression linéaire par service sur l'historique des rendez-vous. Il prédit la charge des 7 prochains jours et détecte les tendances (hausse / baisse / stable).
 
 > Choix volontaire d'un modèle simple et interprétable plutôt qu'un réseau de neurones opaque : pour un premier module d'IA en santé, la clarté prime sur la performance brute.
+
+
+---
 
 ## 📁 Structure du projet
 
@@ -140,6 +202,9 @@ meditrack-ai/
 - `frontend/` : Application React (composants, pages, design system, store Zustand)
 - `ai-service/` : Service Python (FastAPI, modèles ML, scripts)
 - `docs/` : Captures d'écran et documentation
+
+
+---
 
 ## 🚀 Installation
 
@@ -253,6 +318,9 @@ Le service est disponible sur `http://localhost:8001`.
 
 Documentation interactive : `http://localhost:8001/docs`.
 
+
+---
+
 ## 🔌 API
 
 ### Authentification
@@ -301,6 +369,9 @@ curl -X POST http://localhost:8000/api/auth/login \
   -d '{"email":"admin@meditrack.test","password":"password"}'
 ```
 
+
+---
+
 ## 🗺️ Roadmap
 
 - [x] Authentification et gestion des rôles
@@ -318,12 +389,18 @@ curl -X POST http://localhost:8000/api/auth/login \
 - [ ] Tests automatisés (PHPUnit + Vitest + Pytest)
 - [ ] Documentation API interactive (Scramble pour Laravel)
 
+
+---
+
 ## 👤 Auteur
 
 **Sawadogo Noé**
 
 - GitHub : [@Sawadogo-cmk](https://github.com/Sawadogo-cmk)
 - Projet : MediTrack AI — Développement full-stack + IA
+
+
+---
 
 ## 📄 Licence
 
