@@ -1,5 +1,7 @@
 import { apiClient } from './client';
 import type {
+  AiPredictions,
+  AiTrends,
   Appointment,
   Consultation,
   DashboardStats,
@@ -17,8 +19,7 @@ import type {
 // ============================================
 
 export const authApi = {
-  me: () =>
-    apiClient.get<User>('/auth/me').then((r) => r.data),
+  me: () => apiClient.get<User>('/auth/me').then((r) => r.data),
 
   logout: () =>
     apiClient.post<{ message: string }>('/auth/logout').then((r) => r.data),
@@ -287,4 +288,22 @@ export const dashboardApi = {
         params: { days },
       })
       .then((r) => r.data.data),
+};
+
+// ============================================
+// IA
+// ============================================
+
+export const aiApi = {
+  predictions: (daysHistory = 90, daysFuture = 7) =>
+    apiClient
+      .get<AiPredictions>('/ai/predictions', {
+        params: { days_history: daysHistory, days_future: daysFuture },
+      })
+      .then((r) => r.data),
+
+  trends: (daysHistory = 60) =>
+    apiClient
+      .get<AiTrends>('/ai/trends', { params: { days_history: daysHistory } })
+      .then((r) => r.data),
 };

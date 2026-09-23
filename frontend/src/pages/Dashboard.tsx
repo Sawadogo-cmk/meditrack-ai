@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
-  Users, Stethoscope, CalendarDays, FileText,
-  Activity, AlertCircle,
+  Users,
+  Stethoscope,
+  CalendarDays,
+  FileText,
+  Activity,
+  AlertCircle,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -12,23 +16,29 @@ import Badge from '../components/ui/Badge';
 import Avatar from '../components/ui/Avatar';
 import EmptyState from '../components/ui/EmptyState';
 import { ServiceLoadChart, AppointmentStatusChart } from '../components/DashboardCharts';
-import { dashboardApi } from '../api/endpoints';
-import type { Appointment, AppointmentStatus, DashboardStats } from '../types';
+import AiPredictionsCard from '../components/AiPredictions';
+import { dashboardApi, aiApi } from '../api/endpoints';
+import type {
+  AiPredictions,
+  Appointment,
+  AppointmentStatus,
+  DashboardStats,
+} from '../types';
 
 const statusTone: Record<AppointmentStatus, 'amber' | 'blue' | 'green' | 'red' | 'gray'> = {
-  pending:   'amber',
+  pending: 'amber',
   confirmed: 'blue',
   completed: 'green',
   cancelled: 'red',
-  no_show:   'gray',
+  no_show: 'gray',
 };
 
 const statusLabel: Record<AppointmentStatus, string> = {
-  pending:   'En attente',
+  pending: 'En attente',
   confirmed: 'Confirmé',
   completed: 'Terminé',
   cancelled: 'Annulé',
-  no_show:   'Absent',
+  no_show: 'Absent',
 };
 
 export default function Dashboard() {
@@ -36,6 +46,10 @@ export default function Dashboard() {
   const [upcoming, setUpcoming] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [aiData, setAiData] = useState<AiPredictions | null>(null);
+  const [aiLoading, setAiLoading] = useState(true);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -48,6 +62,12 @@ export default function Dashboard() {
       })
       .catch(() => setError('Erreur lors du chargement des données.'))
       .finally(() => setLoading(false));
+
+    aiApi
+      .predictions()
+      .then(setAiData)
+      .catch(() => setAiError('Service IA indisponible'))
+      .finally(() => setAiLoading(false));
   }, []);
 
   if (loading) {
@@ -56,7 +76,10 @@ export default function Dashboard() {
         <PageHeader title="Tableau de bord" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 h-28 animate-pulse" />
+            <div
+              key={i}
+              className="bg-white rounded-xl border border-slate-200 p-5 h-28 animate-pulse"
+            />
           ))}
         </div>
       </Layout>
@@ -70,7 +93,9 @@ export default function Dashboard() {
         <Card>
           <div className="flex items-center gap-3 text-red-700">
             <AlertCircle className="w-5 h-5" />
-            <p className="text-sm">{error ?? 'Impossible de charger le tableau de bord.'}</p>
+            <p className="text-sm">
+              {error ?? 'Impossible de charger le tableau de bord.'}
+            </p>
           </div>
         </Card>
       </Layout>
@@ -84,7 +109,7 @@ export default function Dashboard() {
         subtitle="Vue d'ensemble de l'activité de l'établissement"
       />
 
-      {/* === Stat cards === */}
+      {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Patients actifs"
@@ -116,7 +141,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* === Graphiques === */}
+      {/* Graphiques */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardHeader
@@ -135,7 +160,42 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* === Prochains RDV === */}
+      {/* Prévisions IA + Activité */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <AiPredictionsCard data={aiData} loading={aiLoading} error={aiError} />
+
+        <Card>
+          <CardHeader title="Activité de la semaine" />
+          <div className="space-y-3">
+            <ActivityRow
+              icon={<Users className="w-4 h-4" />}
+              color="primary"
+              label="Nouveaux patients"
+              value={stats.patients.new_this_month}
+            />
+            <ActivityRow
+              icon={<CalendarDays className="w-4 h-4" />}
+              color="amber"
+              label="RDV ce mois"
+              value={stats.appointments.this_month}
+            />
+            <ActivityRow
+              icon={<FileText className="w-4 h-4" />}
+              color="emerald"
+              label="Consultations cette semaine"
+              value={stats.consultations.this_week}
+            />
+            <ActivityRow
+              icon={<Activity className="w-4 h-4" />}
+              color="accent"
+              label="Services actifs"
+              value={stats.services.active}
+            />
+          </div>
+        </Card>
+      </div>
+
+      {/* Prochains RDV */}
       <Card padding="none">
         <div className="p-5 border-b border-slate-100">
           <CardHeader
@@ -169,47 +229,20 @@ export default function Dashboard() {
         )}
       </Card>
 
-      {/* === Activité récente (bonus) === */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <Card className="lg:col-span-2">
-          <CardHeader title="Activité de la semaine" />
-          <div className="space-y-3">
-            <ActivityRow
-              icon={<Users className="w-4 h-4" />}
-              color="primary"
-              label="Nouveaux patients"
-              value={stats.patients.new_this_month}
-            />
-            <ActivityRow
-              icon={<CalendarDays className="w-4 h-4" />}
-              color="amber"
-              label="RDV ce mois"
-              value={stats.appointments.this_month}
-            />
-            <ActivityRow
-              icon={<FileText className="w-4 h-4" />}
-              color="emerald"
-              label="Consultations cette semaine"
-              value={stats.consultations.this_week}
-            />
-            <ActivityRow
-              icon={<Activity className="w-4 h-4" />}
-              color="accent"
-              label="Services actifs"
-              value={stats.services.active}
-            />
-          </div>
-        </Card>
-
+      {/* Résumé */}
+      <div className="mt-6">
         <Card>
           <CardHeader title="Résumé" />
-          <dl className="space-y-3 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <SummaryRow label="Total patients" value={stats.patients.total} />
             <SummaryRow label="Patients archivés" value={stats.patients.archived} />
             <SummaryRow label="Total médecins" value={stats.doctors.total} />
-            <SummaryRow label="Total consultations" value={stats.consultations.total} />
+            <SummaryRow
+              label="Total consultations"
+              value={stats.consultations.total}
+            />
             <SummaryRow label="Total services" value={stats.services.total} />
-          </dl>
+          </div>
         </Card>
       </div>
     </Layout>
@@ -222,8 +255,14 @@ export default function Dashboard() {
 
 function AppointmentMiniRow({ appointment }: { appointment: Appointment }) {
   const date = new Date(appointment.scheduled_at);
-  const day = date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
-  const time = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const day = date.toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+  });
+  const time = date.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <div className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50 transition">
@@ -245,7 +284,8 @@ function AppointmentMiniRow({ appointment }: { appointment: Appointment }) {
           {appointment.patient?.full_name ?? '—'}
         </p>
         <p className="text-xs text-slate-500 truncate">
-          {appointment.doctor?.full_name ?? '—'} · {appointment.service?.name ?? '—'}
+          {appointment.doctor?.full_name ?? '—'} ·{' '}
+          {appointment.service?.name ?? '—'}
         </p>
       </div>
 
@@ -262,21 +302,23 @@ function ActivityRow({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   color: 'primary' | 'accent' | 'amber' | 'emerald';
   label: string;
   value: number;
 }) {
   const colors = {
     primary: 'bg-primary-50 text-primary-600',
-    accent:  'bg-teal-50 text-teal-600',
-    amber:   'bg-amber-50 text-amber-600',
+    accent: 'bg-teal-50 text-teal-600',
+    amber: 'bg-amber-50 text-amber-600',
     emerald: 'bg-emerald-50 text-emerald-600',
   };
   return (
     <div className="flex items-center justify-between py-2">
       <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${colors[color]}`}>
+        <div
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${colors[color]}`}
+        >
           {icon}
         </div>
         <span className="text-sm text-slate-700">{label}</span>
@@ -288,9 +330,9 @@ function ActivityRow({
 
 function SummaryRow({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="font-semibold text-slate-800">{value}</dd>
+    <div className="bg-slate-50 rounded-lg p-3">
+      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-lg font-bold text-slate-800 mt-0.5">{value}</p>
     </div>
   );
 }

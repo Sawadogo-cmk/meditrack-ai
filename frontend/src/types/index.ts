@@ -280,3 +280,46 @@ export interface ApiValidationError {
   message: string;
   errors: Record<string, string[]>;
 }
+
+// ============================================
+// Intelligence Artificielle
+// ============================================
+
+export type AiTrend = 'hausse' | 'baisse' | 'stable';
+
+export interface AiForecastPoint {
+  date: string;
+  predicted_appointments: number;
+}
+
+export interface AiServicePrediction {
+  service_name: string;
+  average_history: number;
+  average_forecast: number;
+  variation_pct: number;
+  trend: AiTrend;
+  forecast: AiForecastPoint[];
+}
+
+export interface AiPredictions {
+  history_days: number;
+  forecast_days: number;
+  generated_at: string;
+  services: AiServicePrediction[];
+}
+
+export interface AiTrendAlert {
+  level: string;
+  service: string;
+  message: string;
+}
+
+export interface AiTrends {
+  generated_at: string;
+  alerts: AiTrendAlert[];
+  services_summary: Array<{
+    service: string;
+    trend: AiTrend;
+    variation_pct: number;
+  }>;
+}
